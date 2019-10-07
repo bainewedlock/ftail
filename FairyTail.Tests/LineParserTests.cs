@@ -13,7 +13,7 @@ namespace FairyTail.Tests
             sut.Append_Text("Hallo");
             sut.Append_Text("\r\nWelt");
 
-            Assert.That(sut.Get_Lines(2), Is.EqualTo(new[] { "Hallo", "Welt" }));
+            Assert.That(sut.Get_Collection(), Is.EqualTo(new[] { "Hallo", "Welt" }));
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace FairyTail.Tests
             sut.Append_Text("Hallo");
             sut.Append_Text(" Welt\r\nOder was");
 
-            Assert.That(sut.Get_Lines(2), Is.EqualTo(new[] { "Hallo Welt", "Oder was" }));
+            Assert.That(sut.Get_Collection(), Is.EqualTo(new[] { "Hallo Welt", "Oder was" }));
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace FairyTail.Tests
 
             sut.Append_Text("\r\nstadden");
 
-            Assert.That(sut.Get_Lines(2), Is.EqualTo(new[] { "", "stadden" }));
+            Assert.That(sut.Get_Collection(), Is.EqualTo(new[] { "", "stadden" }));
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace FairyTail.Tests
 
             sut.Append_Text("whoot\r\n");
 
-            Assert.That(sut.Get_Lines(2), Is.EqualTo(new[] { "whoot", "" }));
+            Assert.That(sut.Get_Collection(), Is.EqualTo(new[] { "whoot", "" }));
         }
 
 
@@ -52,11 +52,10 @@ namespace FairyTail.Tests
         public void Clean_Up()
         {
             var sut = new LineParser();
+            sut.Lines_To_Keep = 2;
             sut.Append_Text("wie\r\nwer\r\nwas\r\nwarum");
 
-            sut.Remove_Except_Last(2);
-
-            Assert.That(sut.Get_Lines(3), Is.EqualTo(new[] { "was", "warum"}));
+            Assert.That(sut.Get_Collection(), Is.EqualTo(new[] { "was", "warum"}));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using PowerArgs;
 using System;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +14,11 @@ namespace FairyTail
         [ArgRequired]
         [ArgExistingFile]
         public string File { get; set; }
+    }
+
+    public class Line
+    {
+        public string Text { get; set; }
     }
 
     public partial class MainWindow : Window
@@ -37,11 +42,15 @@ namespace FairyTail
             }
 
             InitializeComponent();
+
+
             Open_File();
         }
 
         void Open_File()
         {
+            line_parser = new LineParser();
+            TheListBox.ItemsSource = line_parser.Get_Collection();
             read_encoding = Encoding.UTF8;
 
             TheLabel.Content = args.File;
@@ -53,7 +62,6 @@ namespace FairyTail
             //watcher.Changed += Watcher_Changed;
             //watcher.EnableRaisingEvents = true;
 
-            line_parser = new LineParser();
             last_byte_position = 0;
         }
 
@@ -74,6 +82,11 @@ namespace FairyTail
             {
                 Update();
             }
+
+            if (e.Key == Key.F11)
+            {
+                line_parser.F11();
+            }
         }
 
         void Update()
@@ -90,9 +103,9 @@ namespace FairyTail
                 fs.Read(bytes, 0, size);
 
                 line_parser.Append_Text(read_encoding.GetString(bytes));
-                line_parser.Remove_Except_Last(100);
 
-                TheListBox.Text = String.Join(Environment.NewLine, line_parser.Get_Lines(20));
+                //TheListBox.Text = String.Join(Environment.NewLine, line_parser.Get_Lines(20));
+                //Lines.Add(new Line { Text = $@"{DateTime.Now:HH\:mm\:ss}" });
             }
         }
     }

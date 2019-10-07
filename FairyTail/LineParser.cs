@@ -1,39 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace FairyTail
 {
     public class LineParser
     {
-        List<string> buffered_lines = new List<string>();
         readonly string NewLine = "\r\n";
+        ObservableCollection<string> lines = new ObservableCollection<string>();
+        int lines_to_keep;
+
+        public LineParser(int lines_to_keep = 5)
+        {
+            Lines_To_Keep = lines_to_keep;
+        }
+
+        public int Lines_To_Keep
+        {
+            get { return lines_to_keep; }
+            set
+            {
+                if (value < 1) throw new ArgumentException();
+                lines_to_keep = value;
+            }
+        }
+
+        public ReadOnlyObservableCollection<string> Get_Collection() => new ReadOnlyObservableCollection<string>(lines);
 
         public void Append_Text(string text)
         {
-            var lines = text.Split(new[] { NewLine }, StringSplitOptions.None);
+            var new_lines = text.Split(new[] { NewLine }, StringSplitOptions.None);
 
-            if (buffered_lines.Count > 0 && !lines[0].StartsWith(NewLine))
+            if (lines.Count > 0 && !new_lines[0].StartsWith(NewLine))
             {
-                buffered_lines[buffered_lines.Count - 1] += lines[0];
-                buffered_lines.AddRange(lines.Skip(1));
+                var last_line = lines.Last();
+                lines.RemoveAt(lines.Count - 1);
+                Append_Lines(new[] { last_line + new_lines[0] });
+                Append_Lines(new_lines.Skip(1));
             }
             else
             {
-                buffered_lines.AddRange(lines);
+                Append_Lines(new_lines);
             }
         }
 
-        public IEnumerable<string> Get_Lines(int max_lines)
+        void Append_Lines(IEnumerable<string> new_lines)
         {
-            var skip = Math.Max(0, buffered_lines.Count - max_lines);
-            return buffered_lines.Skip(skip);
+            foreach (var item in new_lines)
+            {
+                if (lines.Count == Lines_To_Keep)
+                    lines.RemoveAt(0);
+                lines.Add(item);
+            }
         }
 
-        public void Remove_Except_Last(int lines_to_keep)
+        public void F11()
         {
-            var remove_count = Math.Max(0, buffered_lines.Count - lines_to_keep);
-            buffered_lines.RemoveRange(0, remove_count);
+            if (lines.Any())
+                lines.RemoveAt(0);
         }
     }
 }
