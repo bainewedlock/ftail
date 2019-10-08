@@ -61,6 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AsyncAutoResetEvent.cs" />
     <Compile Include="FileHandle.cs" />
     <Compile Include="LineCollector.cs" />
     <Page Include="MainWindow.xaml">

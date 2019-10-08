@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -13,11 +12,10 @@ namespace FairyTail
     public partial class MainWindow : Window
     {
         MyArgs args;
-        Task bg;
         Encoding encoding;
         FileHandle file_handle;
-        AutoResetEvent file_was_changed = new AutoResetEvent(false);
-        TimeSpan Min_Delay_Between_Updates = TimeSpan.FromMilliseconds(1000);
+        AsyncAutoResetEvent file_was_changed = new AsyncAutoResetEvent();
+        TimeSpan Min_Delay_Between_Updates = TimeSpan.FromMilliseconds(200);
         LineCollector line_collector;
 
         public MainWindow()
@@ -33,47 +31,22 @@ namespace FairyTail
             }
 
             file_handle = new FileHandle(new FileInfo(args.File), File_Changed);
-            line_collector = new LineCollector(5);
+            file_was_changed.Set();
+            line_collector = new LineCollector(50);
             encoding = Encoding.UTF8;
 
             InitializeComponent();
 
-            TheListBox.DataContext = line_collector.Get_Collection();
-            Start_Thread();
+            TheListBox.ItemsSource = line_collector.Get_Collection();
+        }
+
+        async Task Start_It()
+        {
             file_handle.Start();
-        }
 
-        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            file_handle.Stop();
-        }
-
-        void File_Changed(FileInfo file)
-        {
-            file_was_changed.Set();
-        }
-
-        void Window_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape) Close();
-            
-            if(e.Key == Key.F12)
-            {
-
-            }
-        }
-
-        void Start_Thread()
-        {
-            if (bg != null) throw new InvalidOperationException();
-            bg = Task.Run((Action)Task_Loop);
-        }
-
-        async void Task_Loop()
-        {
             while (true)
             {
-                file_was_changed.WaitOne();
+                await file_was_changed.WaitAsync();
 
                 using (var stream = new FileStream(args.File, FileMode.Open, FileAccess.Read))
                 {
@@ -89,8 +62,43 @@ namespace FairyTail
                         });
                 }
 
+                var index = TheListBox.Items.Count - 1;
+
+                TheListBox.SelectedIndex = TheListBox.Items.Count - 1;
+                //TheListBox.ScrollIntoView(TheListBox.SelectedItem);
+
                 await Task.Delay(Min_Delay_Between_Updates);
             }
+        }
+
+        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            file_handle.Stop();
+        }
+
+        void File_Changed(FileInfo file)
+        {
+            file_was_changed.Set();
+        }
+
+        async void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape) Close();
+
+            if (e.Key == Key.F12)
+            {
+                await Start_It();
+            }
+
+            if (e.Key == Key.F11)
+            {
+                file_was_changed.Set();
+            }
+        }
+
+        async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await Start_It();
         }
     }
 }
