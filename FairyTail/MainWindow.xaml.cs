@@ -10,18 +10,6 @@ using System.Windows.Input;
 
 namespace FairyTail
 {
-    public class MyArgs
-    {
-        [ArgRequired]
-        [ArgExistingFile]
-        public string File { get; set; }
-    }
-
-    public class Line
-    {
-        public string Text { get; set; }
-    }
-
     public partial class MainWindow : Window
     {
         MyArgs args;
