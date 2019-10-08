@@ -8,16 +8,16 @@ namespace FairyTail
     {
         FileSystemWatcher watcher;
         readonly FileInfo file;
+        readonly Action<FileInfo> callback;
 
-        public FileHandle(FileInfo file)
+        public FileHandle(FileInfo file, Action<FileInfo> callback)
         {
             this.file = file;
+            this.callback = callback;
         }
-
 
         public void Start()
         {
-
             if (watcher != null) throw new InvalidOperationException();
             watcher = new FileSystemWatcher(file.DirectoryName, file.Name);
             watcher.Changed += Watcher_Changed;
@@ -28,10 +28,7 @@ namespace FairyTail
 
         void Watcher_Changed(object sender, FileSystemEventArgs e)
         {
-            using (var stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
-            {
-                Debug.WriteLine($"new length: {stream.Length}");
-            }
+            callback(file);
         }
 
         public void Stop()

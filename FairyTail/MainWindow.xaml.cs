@@ -1,10 +1,11 @@
 ﻿using PowerArgs;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -25,11 +26,15 @@ namespace FairyTail
     public partial class MainWindow : Window, IDisposable
     {
         MyArgs args;
-        Encoding read_encoding;
-        LineParser line_parser;
+        Encoding encoding;
+        LineCollector line_parser;
         long last_byte_position;
         int max_bytes_to_read = 100 * 1024;
         FileHandle file_handle;
+        AutoResetEvent file_was_changed = new AutoResetEvent(false);
+        Task bg;
+        TimeSpan Min_Delay_Between_Updates = TimeSpan.FromMilliseconds(1000);
+        LineCollector line_collector;
 
         public MainWindow()
         {
@@ -43,37 +48,76 @@ namespace FairyTail
                 Close();
             }
 
-            file_handle = new FileHandle(new FileInfo(args.File));
+            file_handle = new FileHandle(new FileInfo(args.File), File_Changed);
+            line_collector = new LineCollector(5);
 
             InitializeComponent();
+        }
+
+        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            file_handle.Stop();
+        }
+
+        void File_Changed(FileInfo file)
+        {
+            file_was_changed.Set();
         }
 
         void Window_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape) Close();
-            if (e.Key == Key.F12) Update();
-            if (e.Key == Key.F11) line_parser.F11();
+            if (e.Key == Key.F12) Start_Thread();
             if (e.Key == Key.F5) file_handle.Start();
             if (e.Key == Key.F6) file_handle.Stop();
         }
 
-        void Update()
+        void Start_Thread()
         {
-            using (var fs = File.Open(args.File, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            if (bg != null) throw new InvalidOperationException();
+
+            bg = Task.Run((Action)Task_Loop);
+
+            //using (var fs = File.Open(args.File, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            //{
+            //    var missing_bytes = fs.Length - last_byte_position;
+            //    if (missing_bytes < 0) throw new ApplicationException("File shrunk!?");
+
+            //    var size = (int)Math.Min(missing_bytes, max_bytes_to_read);
+
+            //    fs.Seek(-size, SeekOrigin.End);
+            //    var bytes = new byte[size];
+            //    fs.Read(bytes, 0, size);
+
+            //    line_parser.Append_Text(read_encoding.GetString(bytes));
+
+            //    //TheListBox.Text = String.Join(Environment.NewLine, line_parser.Get_Lines(20));
+            //    //Lines.Add(new Line { Text = $@"{DateTime.Now:HH\:mm\:ss}" });
+            //}
+        }
+
+        async void Task_Loop()
+        {
+            while (true)
             {
-                var missing_bytes = fs.Length - last_byte_position;
-                if (missing_bytes < 0) throw new ApplicationException("File shrunk!?");
+                file_was_changed.WaitOne();
 
-                var size = (int)Math.Min(missing_bytes, max_bytes_to_read);
+                using (var stream = new FileStream(args.File, FileMode.Open, FileAccess.Read))
+                {
+                    long total = stream.Length;
+                    line_collector.File_Size_Changed(total,
+                        seek_and_read: seek =>
+                        {
+                            stream.Seek(seek, SeekOrigin.Begin);
+                            int size = (int)(total - seek);
+                            var bytes = new byte[size];
+                            stream.Read(bytes, 0, size);
+                            return encoding.GetString(bytes);
+                        });
+                    Debug.WriteLine($"new length: {total}");
+                }
 
-                fs.Seek(-size, SeekOrigin.End);
-                var bytes = new byte[size];
-                fs.Read(bytes, 0, size);
-
-                line_parser.Append_Text(read_encoding.GetString(bytes));
-
-                //TheListBox.Text = String.Join(Environment.NewLine, line_parser.Get_Lines(20));
-                //Lines.Add(new Line { Text = $@"{DateTime.Now:HH\:mm\:ss}" });
+                await Task.Delay(Min_Delay_Between_Updates);
             }
         }
 
@@ -111,10 +155,5 @@ namespace FairyTail
             // GC.SuppressFinalize(this);
         }
         #endregion
-
-        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            file_handle.Stop();
-        }
     }
 }

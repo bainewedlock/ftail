@@ -62,7 +62,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="FileHandle.cs" />
-    <Compile Include="LineParser.cs" />
+    <Compile Include="LineCollector.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
