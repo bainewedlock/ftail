@@ -11,12 +11,15 @@ namespace FairyTail
 {
     public partial class MainWindow : Window
     {
+        const int Lines_to_keep = 150;
+        TimeSpan Min_Delay_Between_Updates = TimeSpan.FromMilliseconds(150);
+
         MyArgs args;
         Encoding encoding;
         FileHandle file_handle;
         AsyncAutoResetEvent file_was_changed = new AsyncAutoResetEvent();
-        TimeSpan Min_Delay_Between_Updates = TimeSpan.FromMilliseconds(200);
         LineCollector line_collector;
+        bool autoscroll = true;
 
         public MainWindow()
         {
@@ -32,11 +35,13 @@ namespace FairyTail
 
             file_handle = new FileHandle(new FileInfo(args.File), File_Changed);
             file_was_changed.Set();
-            line_collector = new LineCollector(50);
+            line_collector = new LineCollector(Lines_to_keep);
             encoding = Encoding.UTF8;
 
             InitializeComponent();
 
+            Title = $"{Path.GetFileNameWithoutExtension(args.File)} - FTail";
+            TheLabel.Text = args.File;
             TheListBox.ItemsSource = line_collector.Get_Collection();
         }
 
@@ -64,7 +69,11 @@ namespace FairyTail
 
                 var index = TheListBox.Items.Count - 1;
 
-                TheListBox.SelectedIndex = TheListBox.Items.Count - 1;
+
+                if (autoscroll)
+                {
+                    TheListBox.SelectedIndex = TheListBox.Items.Count - 1;
+                }
                 //TheListBox.ScrollIntoView(TheListBox.SelectedItem);
 
                 await Task.Delay(Min_Delay_Between_Updates);
@@ -72,6 +81,11 @@ namespace FairyTail
         }
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Stop_It();
+        }
+
+        void Stop_It()
         {
             file_handle.Stop();
         }
@@ -87,12 +101,17 @@ namespace FairyTail
 
             if (e.Key == Key.F12)
             {
-                await Start_It();
+                Stop_It();
             }
 
             if (e.Key == Key.F11)
             {
                 file_was_changed.Set();
+            }
+
+            if(e.Key == Key.F)
+            {
+                autoscroll = !autoscroll;
             }
         }
 
