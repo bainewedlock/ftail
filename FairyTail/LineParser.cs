@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 
 namespace FairyTail
 {
@@ -10,6 +11,7 @@ namespace FairyTail
         readonly string NewLine = "\r\n";
         ObservableCollection<string> lines = new ObservableCollection<string>();
         int lines_to_keep;
+        WaitHandle drehkreuz = new AutoResetEvent(false);
 
         public LineParser(int lines_to_keep = 5)
         {

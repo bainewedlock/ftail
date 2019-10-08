@@ -1,5 +1,6 @@
 ﻿using PowerArgs;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -21,13 +22,14 @@ namespace FairyTail
         public string Text { get; set; }
     }
 
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IDisposable
     {
         MyArgs args;
         Encoding read_encoding;
         LineParser line_parser;
         long last_byte_position;
         int max_bytes_to_read = 100 * 1024;
+        FileHandle file_handle;
 
         public MainWindow()
         {
@@ -41,52 +43,18 @@ namespace FairyTail
                 Close();
             }
 
+            file_handle = new FileHandle(new FileInfo(args.File));
+
             InitializeComponent();
-
-
-            Open_File();
-        }
-
-        void Open_File()
-        {
-            line_parser = new LineParser();
-            TheListBox.ItemsSource = line_parser.Get_Collection();
-            read_encoding = Encoding.UTF8;
-
-            TheLabel.Content = args.File;
-
-            var path = Path.GetDirectoryName(args.File);
-            var filter = Path.GetFileName(args.File);
-
-            //var watcher = new FileSystemWatcher(path, filter);
-            //watcher.Changed += Watcher_Changed;
-            //watcher.EnableRaisingEvents = true;
-
-            last_byte_position = 0;
-        }
-
-        void Watcher_Changed(object sender, FileSystemEventArgs e)
-        {
-            var stream = new FileStream(args.File, FileMode.Open, FileAccess.Read);
-
         }
 
         void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
-            {
-                Close();
-            }
-
-            if (e.Key == Key.F12)
-            {
-                Update();
-            }
-
-            if (e.Key == Key.F11)
-            {
-                line_parser.F11();
-            }
+            if (e.Key == Key.Escape) Close();
+            if (e.Key == Key.F12) Update();
+            if (e.Key == Key.F11) line_parser.F11();
+            if (e.Key == Key.F5) file_handle.Start();
+            if (e.Key == Key.F6) file_handle.Stop();
         }
 
         void Update()
@@ -107,6 +75,46 @@ namespace FairyTail
                 //TheListBox.Text = String.Join(Environment.NewLine, line_parser.Get_Lines(20));
                 //Lines.Add(new Line { Text = $@"{DateTime.Now:HH\:mm\:ss}" });
             }
+        }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~MainWindow() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
+
+        void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            file_handle.Stop();
         }
     }
 }
