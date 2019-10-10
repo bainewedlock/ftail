@@ -19,7 +19,8 @@ namespace FairyTail
         FileHandle file_handle;
         AsyncAutoResetEvent file_was_changed = new AsyncAutoResetEvent();
         LineCollector line_collector;
-        bool autoscroll = true;
+        bool auto_update = true;
+        bool started = false;
 
         public MainWindow()
         {
@@ -43,41 +44,47 @@ namespace FairyTail
             Title = $"{Path.GetFileNameWithoutExtension(args.File)} - FTail";
             TheLabel.Text = args.File;
             TheListBox.ItemsSource = line_collector.Get_Collection();
+            TheListBox.DisplayMemberPath = "Text";
         }
 
         async Task Start_It()
         {
+            if (started) throw new InvalidOperationException();
+            started = true;
+
             file_handle.Start();
 
             while (true)
             {
                 await file_was_changed.WaitAsync();
 
-                using (var stream = new FileStream(args.File, FileMode.Open, FileAccess.Read))
+                if (auto_update)
                 {
-                    long total = stream.Length;
-                    line_collector.File_Size_Changed(total,
-                        seek_and_read: seek =>
-                        {
-                            stream.Seek(seek, SeekOrigin.Begin);
-                            int size = (int)(total - seek);
-                            var bytes = new byte[size];
-                            stream.Read(bytes, 0, size);
-                            return encoding.GetString(bytes);
-                        });
+                    Update_From_File();
                 }
-
-                var index = TheListBox.Items.Count - 1;
-
-
-                if (autoscroll)
-                {
-                    TheListBox.SelectedIndex = TheListBox.Items.Count - 1;
-                }
-                //TheListBox.ScrollIntoView(TheListBox.SelectedItem);
 
                 await Task.Delay(Min_Delay_Between_Updates);
             }
+        }
+
+        void Update_From_File()
+        {
+            using (var stream = new FileStream(args.File, FileMode.Open, FileAccess.Read))
+            {
+                long total = stream.Length;
+                line_collector.File_Size_Changed(total,
+                    seek_and_read: seek =>
+                    {
+                        stream.Seek(seek, SeekOrigin.Begin);
+                        int size = (int)(total - seek);
+                        var bytes = new byte[size];
+                        stream.Read(bytes, 0, size);
+                        return encoding.GetString(bytes);
+                    });
+            }
+
+            TheListBox.SelectedIndex = TheListBox.Items.Count - 1;
+            TheListBox.ScrollIntoView(TheListBox.SelectedItem);
         }
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -95,23 +102,13 @@ namespace FairyTail
             file_was_changed.Set();
         }
 
-        async void Window_KeyUp(object sender, KeyEventArgs e)
+        void Window_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape) Close();
 
-            if (e.Key == Key.F12)
+            if (e.Key == Key.F)
             {
-                Stop_It();
-            }
-
-            if (e.Key == Key.F11)
-            {
-                file_was_changed.Set();
-            }
-
-            if(e.Key == Key.F)
-            {
-                autoscroll = !autoscroll;
+                auto_update = !auto_update;
             }
         }
 

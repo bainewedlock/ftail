@@ -63,6 +63,7 @@
     </ApplicationDefinition>
     <Compile Include="AsyncAutoResetEvent.cs" />
     <Compile Include="FileHandle.cs" />
+    <Compile Include="Line.cs" />
     <Compile Include="LineCollector.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -72,6 +73,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ListBoxBehavior.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

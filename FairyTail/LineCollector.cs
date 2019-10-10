@@ -10,7 +10,7 @@ namespace FairyTail
         public static string SNIP = "----- snip -----";
         public const int Growth_Threshold = 10 * 1024; // 10 KB
         readonly string NewLine = "\r\n";
-        ObservableCollection<string> lines = new ObservableCollection<string>();
+        ObservableCollection<Line> lines = new ObservableCollection<Line>();
         int lines_to_keep;
         long previous_file_size;
 
@@ -31,8 +31,8 @@ namespace FairyTail
         }
 
 
-        public ReadOnlyObservableCollection<string> Get_Collection()
-            => new ReadOnlyObservableCollection<string>(lines);
+        public ReadOnlyObservableCollection<Line> Get_Collection()
+            => new ReadOnlyObservableCollection<Line>(lines);
 
         public void Append_Text(string text)
         {
@@ -57,7 +57,10 @@ namespace FairyTail
             {
                 if (lines.Count == Lines_To_Keep)
                     lines.RemoveAt(0);
-                lines.Add(item);
+                lines.Add(new Line
+                {
+                    Text = item
+                });
             }
         }
 
@@ -81,7 +84,7 @@ namespace FairyTail
             }
             else
             {
-                if (lines.Count == 0 || lines.Last() != "") lines.Add("");
+                if (lines.Count == 0 || lines.Last().Text != "") lines.Add(new Line { Text = "" });
                 Append_Text($"{SNIP}\r\n");
                 Append_Text(seek_and_read(total - Growth_Threshold));
             }
@@ -91,7 +94,7 @@ namespace FairyTail
 
         public void F11()
         {
-            lines.Add("F12");
+            lines.Add(new Line { Text = "F12" });
         }
     }
 }
