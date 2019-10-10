@@ -37,7 +37,7 @@ namespace FairyTail
             file_handle = new FileHandle(new FileInfo(args.File), File_Changed);
             file_was_changed.Set();
             line_collector = new LineCollector(Lines_to_keep);
-            encoding = Encoding.UTF8;
+            encoding = Encoding.Default;
 
             InitializeComponent();
 
@@ -110,6 +110,20 @@ namespace FairyTail
             {
                 auto_update = !auto_update;
             }
+
+            if(e.Key == Key.E)
+            {
+                Toggle_Encoding();
+            }
+        }
+
+        void Toggle_Encoding()
+        {
+            if (encoding == Encoding.Default)
+                encoding = Encoding.UTF8;
+            else
+                encoding = Encoding.Default;
+
         }
 
         async void Window_Loaded(object sender, RoutedEventArgs e)
