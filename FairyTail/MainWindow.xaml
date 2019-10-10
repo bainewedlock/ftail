@@ -34,7 +34,10 @@
         <TextBox DockPanel.Dock="Top" IsReadOnly="True" x:Name="TheLabel" Style="{StaticResource SunkenTextBox}"
             FontFamily="Consolas" FontSize="11" Background="LightGray" Padding="2"
                  Text="c:\whaa" VerticalAlignment="Top" BorderThickness="0" Margin="5"/>
-        <ListView x:Name="TheListBox" FontFamily="Consolas" FontSize="11" SelectionMode="Multiple"
+        <DataGrid x:Name="TheListBox" FontFamily="Consolas" FontSize="11"
+            IsReadOnly="True" CanUserResizeColumns="False" CanUserResizeRows="False"
+            HeadersVisibility="None"
+            HorizontalGridLinesBrush="Transparent"
                  />
                  <!--local:ListBoxBehavior.ScrollOnNewItem="true"-->
         <!--<TabControl>

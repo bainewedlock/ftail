@@ -6,7 +6,9 @@
 * Multitabs
 * Color Filters
 * Encoding Auto Detect (ANSI vs UTF8)
-* Auto-Update visible (z.B. andere Hintergrundfarbe)
+* Anzeige, ob Auto-Update aktiv ist (z.B. andere Hintergrundfarbe)
+* Anzeige, welches Encoding aktiv ist
+
 
 ## Done
 * Filename in Title
