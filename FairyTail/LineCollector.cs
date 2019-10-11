@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows.Media;
 
 namespace FairyTail
 {
@@ -59,9 +61,18 @@ namespace FairyTail
                     lines.RemoveAt(0);
                 lines.Add(new Line
                 {
-                    Text = item
+                    Text = item,
+                    Foreground = Calculate_Foreground(item)
                 });
             }
+        }
+
+        Brush Calculate_Foreground(string text)
+        {
+            if (Regex.IsMatch(text, @"info", RegexOptions.IgnoreCase))
+                return Brushes.Black;
+            else
+                return Brushes.DarkBlue;
         }
 
         public void File_Size_Changed(long total, Func<long, string> seek_and_read)

@@ -1,7 +1,7 @@
 ## Must Have
 
 ## Ideen
-* Color Filters
+* Line Color Regex per ~/ftail.yaml konfigurierbar
 * Encoding Auto Detect (ANSI vs UTF8)
 * Menü mit Hotkeys, damit man die nicht auswendig kennen muss
 * Multitabs
