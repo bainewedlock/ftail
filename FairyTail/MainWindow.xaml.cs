@@ -1,11 +1,13 @@
 ﻿using PowerArgs;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace FairyTail
 {
@@ -45,6 +47,7 @@ namespace FairyTail
             TheLabel.Text = args.File;
             TheListBox.ItemsSource = line_collector.Get_Collection();
             TheListBox.DisplayMemberPath = "Text";
+            Update_UI();
         }
 
         async Task Start_It()
@@ -108,13 +111,26 @@ namespace FairyTail
 
             if (e.Key == Key.F)
             {
-                auto_update = !auto_update;
+                Toggle_Auto_Update();
             }
 
-            if(e.Key == Key.E)
+            if (e.Key == Key.E)
             {
                 Toggle_Encoding();
             }
+
+            if(e.Key == Key.F4)
+            {
+                Process.Start(args.File);
+                Close();
+            }
+        }
+
+        void Toggle_Auto_Update()
+        {
+            auto_update = !auto_update;
+
+            Update_UI();
         }
 
         void Toggle_Encoding()
@@ -124,6 +140,20 @@ namespace FairyTail
             else
                 encoding = Encoding.Default;
 
+            Update_UI();
+        }
+
+        void Update_UI()
+        {
+            if (encoding == Encoding.Default)
+                TheEncodingLabel.Text = "ansi";
+            else
+                TheEncodingLabel.Text = encoding.BodyName;
+
+            if (auto_update)
+                Background = Brushes.White;
+            else
+                Background = Brushes.DarkGray;
         }
 
         async void Window_Loaded(object sender, RoutedEventArgs e)

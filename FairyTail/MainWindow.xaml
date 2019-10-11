@@ -22,6 +22,10 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
         </Style>
     </Window.Resources>
     <DockPanel>
@@ -31,15 +35,18 @@
                 <MenuItem Header="_Close" />
             </MenuItem>
         </Menu>-->
-        <TextBox DockPanel.Dock="Top" IsReadOnly="True" x:Name="TheLabel" Style="{StaticResource SunkenTextBox}"
-            FontFamily="Consolas" FontSize="11" Background="LightGray" Padding="2"
-                 Text="c:\whaa" VerticalAlignment="Top" BorderThickness="0" Margin="5"/>
+        <DockPanel DockPanel.Dock="Top" Margin="5,5,5,5">
+            <TextBox DockPanel.Dock="Right" IsReadOnly="True" x:Name="TheEncodingLabel" Style="{StaticResource SunkenTextBox}"
+                Text="ANSI" MinWidth="50" TextAlignment="Center" Margin="10,0,0,0"/>
+            <TextBox x:Name="TheLabel" Style="{StaticResource SunkenTextBox}"
+                Text="c:\whaa"/>
+        </DockPanel>
         <DataGrid x:Name="TheListBox" FontFamily="Consolas" FontSize="11"
             IsReadOnly="True" CanUserResizeColumns="False" CanUserResizeRows="False"
             HeadersVisibility="None"
             HorizontalGridLinesBrush="Transparent"
                  />
-                 <!--local:ListBoxBehavior.ScrollOnNewItem="true"-->
+        <!--local:ListBoxBehavior.ScrollOnNewItem="true"-->
         <!--<TabControl>
             <TabItem Header="Yo">
             </TabItem>
