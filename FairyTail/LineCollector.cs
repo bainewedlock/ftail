@@ -91,10 +91,5 @@ namespace FairyTail
 
             previous_file_size = total;
         }
-
-        public void F11()
-        {
-            lines.Add(new Line { Text = "F12" });
-        }
     }
 }

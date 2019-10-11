@@ -43,9 +43,19 @@
         </DockPanel>
         <DataGrid x:Name="TheListBox" FontFamily="Consolas" FontSize="11"
             IsReadOnly="True" CanUserResizeColumns="False" CanUserResizeRows="False"
-            HeadersVisibility="None"
+            HeadersVisibility="None" ItemsSource="{Binding}"
             HorizontalGridLinesBrush="Transparent"
-                 />
+            AutoGenerateColumns="false">
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Background" Value="{Binding Background}"/>
+                    <Setter Property="Foreground" Value="{Binding Foreground}"/>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Text}"/>
+            </DataGrid.Columns>
+        </DataGrid>
         <!--local:ListBoxBehavior.ScrollOnNewItem="true"-->
         <!--<TabControl>
             <TabItem Header="Yo">

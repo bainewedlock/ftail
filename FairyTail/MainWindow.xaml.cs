@@ -42,8 +42,9 @@ namespace FairyTail
 
             Title = $"{Path.GetFileNameWithoutExtension(file)} - FTail";
             TheLabel.Text = file;
-            TheListBox.ItemsSource = line_collector.Get_Collection();
-            TheListBox.DisplayMemberPath = "Text";
+            TheListBox.DataContext = line_collector.Get_Collection();
+            //TheListBox.ItemsSource = line_collector.Get_Collection();
+            //TheListBox.DisplayMemberPath = "Text";
             Update_UI();
         }
 
