@@ -1,5 +1,4 @@
-﻿using PowerArgs;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -16,35 +15,33 @@ namespace FairyTail
         const int Lines_to_keep = 150;
         TimeSpan Min_Delay_Between_Updates = TimeSpan.FromMilliseconds(150);
 
-        MyArgs args;
         Encoding encoding;
         FileHandle file_handle;
         AsyncAutoResetEvent file_was_changed = new AsyncAutoResetEvent();
         LineCollector line_collector;
         bool auto_update = true;
         bool started = false;
+        string file;
 
         public MainWindow()
         {
-            try
+            file = Environment.GetCommandLineArgs().ElementAtOrDefault(1) ?? "";
+
+            if (file == "")
             {
-                args = Args.Parse<MyArgs>(Environment.GetCommandLineArgs().Skip(1).ToArray());
-            }
-            catch (ArgException ex)
-            {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Need filename!");
                 Close();
             }
 
-            file_handle = new FileHandle(new FileInfo(args.File), File_Changed);
+            file_handle = new FileHandle(new FileInfo(file), File_Changed);
             file_was_changed.Set();
             line_collector = new LineCollector(Lines_to_keep);
             encoding = Encoding.Default;
 
             InitializeComponent();
 
-            Title = $"{Path.GetFileNameWithoutExtension(args.File)} - FTail";
-            TheLabel.Text = args.File;
+            Title = $"{Path.GetFileNameWithoutExtension(file)} - FTail";
+            TheLabel.Text = file;
             TheListBox.ItemsSource = line_collector.Get_Collection();
             TheListBox.DisplayMemberPath = "Text";
             Update_UI();
@@ -72,7 +69,7 @@ namespace FairyTail
 
         void Update_From_File()
         {
-            using (var stream = new FileStream(args.File, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
             {
                 long total = stream.Length;
                 line_collector.File_Size_Changed(total,
@@ -121,7 +118,7 @@ namespace FairyTail
 
             if(e.Key == Key.F4)
             {
-                Process.Start(args.File);
+                Process.Start(file);
                 Close();
             }
         }
