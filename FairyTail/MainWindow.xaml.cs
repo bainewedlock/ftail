@@ -94,7 +94,7 @@ namespace FairyTail
             if (pattern == "")
                 interactive_highlight_pattern = null;
             else
-                interactive_highlight_pattern = new Regex(pattern);
+                interactive_highlight_pattern = new Regex(pattern, RegexOptions.IgnoreCase);
 
 
             Update_Filters();
@@ -108,8 +108,8 @@ namespace FairyTail
                 all_filters.Insert(0, new Config.Filter
                 {
                     Pattern = interactive_highlight_pattern,
-                    Foreground = Brushes.Black,
-                    Background = Brushes.Teal
+                    Foreground = Config.InteractiveHighlightForeground,
+                    Background = Config.InteractiveHighlightBackground
                 });
 
             line_collector.Set_Filters(all_filters.ToArray());
@@ -117,7 +117,8 @@ namespace FairyTail
 
         void Setup()
         {
-            var config_file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            var config_file = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 "ftail.xml");
 
             if (File.Exists(config_file))
@@ -148,7 +149,8 @@ namespace FairyTail
 
         void Update_From_File()
         {
-            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read,
+                FileShare.ReadWrite))
             {
                 long total = stream.Length;
                 line_collector.File_Size_Changed(total,

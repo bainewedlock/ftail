@@ -60,21 +60,29 @@ namespace FairyTail
                 if (lines.Count == Lines_To_Keep)
                     lines.RemoveAt(0);
 
-                Brush foreground = Brushes.Black;
-                Brush background = Brushes.White;
+                var line = Reapply_Filters(new Line { Text = item });
 
-                if (Find_Filter(item, out var filter))
-                {
-                    foreground = filter.Foreground;
-                    background = filter.Background;
-                }
+                lines.Add(line);
+            }
+        }
 
-                lines.Add(new Line
+        Line Reapply_Filters(Line line)
+        {
+            if (Find_Filter(line.Text, out var filter))
+            {
+                return new Line
                 {
-                    Text = item,
-                    Foreground = foreground,
-                    Background = background
-                });
+                    Text = line.Text,
+                    Foreground = filter.Foreground,
+                    Background = filter.Background,
+                };
+            }
+            else
+            {
+                return new Line
+                {
+                    Text = line.Text
+                };
             }
         }
 
@@ -124,6 +132,14 @@ namespace FairyTail
         public void Set_Filters(Config.Filter[] filters)
         {
             this.filters = filters ?? new Config.Filter[0];
+
+            var old_lines = lines.ToArray();
+            lines.Clear();
+            
+            foreach (var l in old_lines)
+            {
+                lines.Add(Reapply_Filters(l));
+            }
         }
     }
 }

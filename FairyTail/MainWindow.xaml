@@ -34,7 +34,7 @@
                 <MenuItem Header="_Follow File (F)" Command="{Binding FollowFileCommand}"/>
                 <MenuItem Header="Toggle _Encoding (E)" Command="{Binding ToggleEncodingCommand}" />
                 <MenuItem Header="Edit File (F4)" Command="{Binding EditFileCommand}" />
-                <!--<MenuItem Header="Highlight (H)" Command="{Binding HighlightCommand}" />-->
+                <MenuItem Header="Highlight (H)" Command="{Binding HighlightCommand}" />
             </MenuItem>
         </Menu>
         <DockPanel DockPanel.Dock="Top" Margin="5,5,5,5">
