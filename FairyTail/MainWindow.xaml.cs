@@ -52,11 +52,11 @@ namespace FairyTail
             DataContext = this;
             Lines = line_collector.Get_Collection();
 
-            Update_From_File();
-
             Title = $"{Path.GetFileNameWithoutExtension(file)} - FTail";
             TheLabel.Text = file;
             Update_UI();
+
+            file_was_changed.Set();
         }
 
         void Setup()
@@ -92,7 +92,7 @@ namespace FairyTail
 
         void Update_From_File()
         {
-            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 long total = stream.Length;
                 line_collector.File_Size_Changed(total,
@@ -143,7 +143,7 @@ namespace FairyTail
         {
             follow_file = !follow_file;
 
-            if(follow_file)
+            if (follow_file)
             {
                 Update_From_File();
             }
