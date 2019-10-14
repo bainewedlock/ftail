@@ -52,8 +52,10 @@ namespace FairyTail
             var config_file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 "ftail.xml");
 
-            if(File.Exists(config_file))
+            if (File.Exists(config_file))
                 Config.Load(config_file);
+            else
+                Config.Use_Defaults();
         }
 
         async Task Start_It()

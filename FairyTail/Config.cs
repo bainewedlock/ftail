@@ -13,6 +13,13 @@ namespace FairyTail
         public static string FontFamily { get; private set; }
         public static int FontSize { get; private set; }
 
+        public static void Use_Defaults()
+        {
+            Filters = new Filter[0];
+            FontFamily = "Consolas";
+            FontSize = 12;
+        }
+
         public static void Load(string file)
         {
             var xml = XDocument.Load(file).Element("FTailConfig");
