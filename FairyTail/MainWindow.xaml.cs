@@ -25,12 +25,13 @@ namespace FairyTail
 
         public MainWindow()
         {
+            Setup();
             file = Environment.GetCommandLineArgs().ElementAtOrDefault(1) ?? "";
 
             if (file == "")
             {
                 MessageBox.Show("Need filename!");
-                Close();
+                Environment.Exit(2);
             }
 
             file_handle = new FileHandle(new FileInfo(file), File_Changed);
@@ -44,6 +45,15 @@ namespace FairyTail
             TheLabel.Text = file;
             TheListBox.DataContext = line_collector.Get_Collection();
             Update_UI();
+        }
+
+        void Setup()
+        {
+            var config_file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "ftail.xml");
+
+            if(File.Exists(config_file))
+                Config.Load(config_file);
         }
 
         async Task Start_It()

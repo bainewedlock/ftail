@@ -29,19 +29,21 @@
         </Style>
     </Window.Resources>
     <DockPanel>
-        <!--<Menu DockPanel.Dock="Top">
+        <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_Open" />
                 <MenuItem Header="_Close" />
             </MenuItem>
-        </Menu>-->
+        </Menu>
         <DockPanel DockPanel.Dock="Top" Margin="5,5,5,5">
             <TextBox DockPanel.Dock="Right" IsReadOnly="True" x:Name="TheEncodingLabel" Style="{StaticResource SunkenTextBox}"
                 Text="ANSI" MinWidth="50" TextAlignment="Center" Margin="10,0,0,0"/>
             <TextBox x:Name="TheLabel" Style="{StaticResource SunkenTextBox}"
                 Text="c:\whaa"/>
         </DockPanel>
-        <DataGrid x:Name="TheListBox" FontFamily="Consolas" FontSize="11"
+        <DataGrid x:Name="TheListBox"
+            FontFamily="{Binding Source={x:Static local:Config.FontFamily}}"
+            FontSize="{Binding Source={x:Static local:Config.FontSize}}"
             IsReadOnly="True" CanUserResizeColumns="False" CanUserResizeRows="False"
             HeadersVisibility="None" ItemsSource="{Binding}"
             HorizontalGridLinesBrush="Transparent"
@@ -50,16 +52,13 @@
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="Background" Value="{Binding Background}"/>
                     <Setter Property="Foreground" Value="{Binding Foreground}"/>
+                    <!--<Setter Property="Margin" Value="0"/>
+                    <Setter Property="Padding" Value="0"/>-->
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Text}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <!--local:ListBoxBehavior.ScrollOnNewItem="true"-->
-        <!--<TabControl>
-            <TabItem Header="Yo">
-            </TabItem>
-        </TabControl>-->
     </DockPanel>
 </Window>

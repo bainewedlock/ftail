@@ -44,7 +44,7 @@ namespace FairyTail
             {
                 var last_line = lines.Last();
                 lines.RemoveAt(lines.Count - 1);
-                Append_Lines(new[] { last_line + new_lines[0] });
+                Append_Lines(new[] { last_line.Text + new_lines[0] });
                 Append_Lines(new_lines.Skip(1));
             }
             else
@@ -59,20 +59,40 @@ namespace FairyTail
             {
                 if (lines.Count == Lines_To_Keep)
                     lines.RemoveAt(0);
+
+                var filters = Config.Filters.FirstOrDefault(x => x.Pattern.IsMatch(item));
+
+                Brush foreground = Brushes.Black;
+                Brush background = Brushes.White;
+
+                if (Find_Filter(item, out var filter))
+                {
+                    foreground = filter.Foreground;
+                    background = filter.Background;
+                }
+
                 lines.Add(new Line
                 {
                     Text = item,
-                    Foreground = Calculate_Foreground(item)
+                    Foreground = foreground,
+                    Background = background
                 });
             }
         }
 
-        Brush Calculate_Foreground(string text)
+        bool Find_Filter(string line, out Config.Filter filter)
         {
-            if (Regex.IsMatch(text, @"info", RegexOptions.IgnoreCase))
-                return Brushes.Black;
-            else
-                return Brushes.DarkBlue;
+            foreach (var f in Config.Filters)
+            {
+                if (f.Pattern.IsMatch(line))
+                {
+                    filter = f;
+                    return true;
+                }
+            }
+
+            filter = null;
+            return false;
         }
 
         public void File_Size_Changed(long total, Func<long, string> seek_and_read)
