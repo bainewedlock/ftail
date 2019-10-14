@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -19,9 +20,15 @@ namespace FairyTail
         FileHandle file_handle;
         AsyncAutoResetEvent file_was_changed = new AsyncAutoResetEvent();
         LineCollector line_collector;
-        bool auto_update = true;
+        bool follow_file = true;
         bool started = false;
         string file;
+
+        public ReadOnlyObservableCollection<Line> Lines { get; private set; }
+
+        public ICommand FollowFileCommand { get; private set; }
+        public ICommand ToggleEncodingCommand { get; private set; }
+        public ICommand EditFileCommand { get; private set; }
 
         public MainWindow()
         {
@@ -35,15 +42,20 @@ namespace FairyTail
             }
 
             file_handle = new FileHandle(new FileInfo(file), File_Changed);
-            file_was_changed.Set();
             line_collector = new LineCollector(Lines_to_keep);
             encoding = Encoding.Default;
-
+            FollowFileCommand = new DelegateCommand(Toggle_Follow_File);
+            ToggleEncodingCommand = new DelegateCommand(Toggle_Encoding);
+            EditFileCommand = new DelegateCommand(Edit_File);
             InitializeComponent();
+
+            DataContext = this;
+            Lines = line_collector.Get_Collection();
+
+            Update_From_File();
 
             Title = $"{Path.GetFileNameWithoutExtension(file)} - FTail";
             TheLabel.Text = file;
-            TheListBox.DataContext = line_collector.Get_Collection();
             Update_UI();
         }
 
@@ -69,7 +81,7 @@ namespace FairyTail
             {
                 await file_was_changed.WaitAsync();
 
-                if (auto_update)
+                if (follow_file)
                 {
                     Update_From_File();
                 }
@@ -94,8 +106,11 @@ namespace FairyTail
                     });
             }
 
-            TheListBox.SelectedIndex = TheListBox.Items.Count - 1;
-            TheListBox.ScrollIntoView(TheListBox.SelectedItem);
+            if (TheListBox.Items.Count > 0)
+            {
+                TheListBox.SelectedIndex = TheListBox.Items.Count - 1;
+                TheListBox.ScrollIntoView(TheListBox.SelectedItem);
+            }
         }
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -116,32 +131,27 @@ namespace FairyTail
         void Window_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape) Close();
-
-            if (e.Key == Key.F)
-            {
-                Toggle_Auto_Update();
-            }
-
-            if (e.Key == Key.E)
-            {
-                Toggle_Encoding();
-            }
-
-            if(e.Key == Key.F4)
-            {
-                Process.Start(file);
-                Close();
-            }
         }
 
-        void Toggle_Auto_Update()
+        public void Edit_File()
         {
-            auto_update = !auto_update;
+            Process.Start(file);
+            Close();
+        }
+
+        public void Toggle_Follow_File()
+        {
+            follow_file = !follow_file;
+
+            if(follow_file)
+            {
+                Update_From_File();
+            }
 
             Update_UI();
         }
 
-        void Toggle_Encoding()
+        public void Toggle_Encoding()
         {
             if (encoding == Encoding.Default)
                 encoding = Encoding.UTF8;
@@ -158,7 +168,7 @@ namespace FairyTail
             else
                 TheEncodingLabel.Text = encoding.BodyName;
 
-            if (auto_update)
+            if (follow_file)
                 Background = Brushes.White;
             else
                 Background = Brushes.DarkGray;

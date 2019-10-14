@@ -30,30 +30,29 @@
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="_Open" />
-                <MenuItem Header="_Close" />
+            <MenuItem Header="_View">
+                <MenuItem Header="_Follow File (F)" Command="{Binding FollowFileCommand}"/>
+                <MenuItem Header="Toggle _Encoding (E)" Command="{Binding ToggleEncodingCommand}" />
+                <MenuItem Header="Edit File (F4)" Command="{Binding EditFileCommand}" />
             </MenuItem>
         </Menu>
         <DockPanel DockPanel.Dock="Top" Margin="5,5,5,5">
-            <TextBox DockPanel.Dock="Right" IsReadOnly="True" x:Name="TheEncodingLabel" Style="{StaticResource SunkenTextBox}"
-                Text="ANSI" MinWidth="50" TextAlignment="Center" Margin="10,0,0,0"/>
-            <TextBox x:Name="TheLabel" Style="{StaticResource SunkenTextBox}"
-                Text="c:\whaa"/>
+            <TextBox DockPanel.Dock="Right" IsReadOnly="True" x:Name="TheEncodingLabel"
+                     Style="{StaticResource SunkenTextBox}" Text="ANSI" MinWidth="50"
+                     TextAlignment="Center" Margin="10,0,0,0"/>
+            <TextBox x:Name="TheLabel" Style="{StaticResource SunkenTextBox}" Text="c:\logfile.txt"/>
         </DockPanel>
         <DataGrid x:Name="TheListBox"
             FontFamily="{Binding Source={x:Static local:Config.FontFamily}}"
             FontSize="{Binding Source={x:Static local:Config.FontSize}}"
             IsReadOnly="True" CanUserResizeColumns="False" CanUserResizeRows="False"
-            HeadersVisibility="None" ItemsSource="{Binding}"
+            HeadersVisibility="None" ItemsSource="{Binding Lines}"
             HorizontalGridLinesBrush="Transparent"
             AutoGenerateColumns="false">
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
                     <Setter Property="Background" Value="{Binding Background}"/>
                     <Setter Property="Foreground" Value="{Binding Foreground}"/>
-                    <!--<Setter Property="Margin" Value="0"/>
-                    <Setter Property="Padding" Value="0"/>-->
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
@@ -61,4 +60,9 @@
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
+    <Window.InputBindings>
+        <KeyBinding Key="F" Command="{Binding FollowFileCommand}"/>
+        <KeyBinding Key="E" Command="{Binding ToggleEncodingCommand}"/>
+        <KeyBinding Key="F4" Command="{Binding EditFileCommand}"/>
+    </Window.InputBindings>
 </Window>

@@ -60,6 +60,7 @@
     </ApplicationDefinition>
     <Compile Include="AsyncAutoResetEvent.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="DelegateCommand.cs" />
     <Compile Include="FileHandle.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="LineCollector.cs" />
