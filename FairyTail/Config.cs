@@ -7,7 +7,7 @@ using System.Windows.Media;
 
 namespace FairyTail
 {
-    static class Config
+    public static class Config
     {
         public static Filter[] Filters { get; private set; }
         public static string FontFamily { get; private set; }
@@ -31,9 +31,9 @@ namespace FairyTail
 
         public class Filter
         {
-            public Regex Pattern { get; private set; }
-            public Brush Foreground { get; private set; }
-            public Brush Background { get; private set; }
+            public Regex Pattern { get; set; }
+            public Brush Foreground { get; set; }
+            public Brush Background { get; set; }
 
             public static Filter Parse(XElement e)
             {

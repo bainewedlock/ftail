@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Media;
 
 namespace FairyTail
@@ -15,6 +14,7 @@ namespace FairyTail
         ObservableCollection<Line> lines = new ObservableCollection<Line>();
         int lines_to_keep;
         long previous_file_size;
+        Config.Filter[] filters;
 
         public LineCollector(int lines_to_keep = 5)
         {
@@ -60,8 +60,6 @@ namespace FairyTail
                 if (lines.Count == Lines_To_Keep)
                     lines.RemoveAt(0);
 
-                var filters = Config.Filters.FirstOrDefault(x => x.Pattern.IsMatch(item));
-
                 Brush foreground = Brushes.Black;
                 Brush background = Brushes.White;
 
@@ -82,7 +80,7 @@ namespace FairyTail
 
         bool Find_Filter(string line, out Config.Filter filter)
         {
-            foreach (var f in Config.Filters)
+            foreach (var f in filters)
             {
                 if (f.Pattern.IsMatch(line))
                 {
@@ -121,6 +119,11 @@ namespace FairyTail
             }
 
             previous_file_size = total;
+        }
+
+        public void Set_Filters(Config.Filter[] filters)
+        {
+            this.filters = filters ?? new Config.Filter[0];
         }
     }
 }

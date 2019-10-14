@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -23,12 +24,16 @@ namespace FairyTail
         bool follow_file = true;
         bool started = false;
         string file;
+        Regex interactive_highlight_pattern = null;
 
         public ReadOnlyObservableCollection<Line> Lines { get; private set; }
 
         public ICommand FollowFileCommand { get; private set; }
         public ICommand ToggleEncodingCommand { get; private set; }
         public ICommand EditFileCommand { get; private set; }
+        public ICommand HighlightCommand { get; private set; }
+        public ICommand ExitCommand { get; private set; }
+
 
         public MainWindow()
         {
@@ -43,11 +48,16 @@ namespace FairyTail
 
             file_handle = new FileHandle(new FileInfo(file), File_Changed);
             line_collector = new LineCollector(Lines_to_keep);
+            Update_Filters();
             encoding = Encoding.Default;
             FollowFileCommand = new DelegateCommand(Toggle_Follow_File);
             ToggleEncodingCommand = new DelegateCommand(Toggle_Encoding);
             EditFileCommand = new DelegateCommand(Edit_File);
+            HighlightCommand = new DelegateCommand(Change_Interactive_Highlight);
+            ExitCommand = new DelegateCommand(Close);
+
             InitializeComponent();
+
 
             DataContext = this;
             Lines = line_collector.Get_Collection();
@@ -57,6 +67,52 @@ namespace FairyTail
             Update_UI();
 
             file_was_changed.Set();
+        }
+
+        void Change_Interactive_Highlight()
+        {
+            var w = new PromptWindow();
+            w.TheLabel.Content = "Enter a highlight pattern";
+
+            if (interactive_highlight_pattern != null)
+                w.TheTextBox.Text = interactive_highlight_pattern.ToString();
+            else
+                w.TheTextBox.Clear();
+
+            w.TheTextBox.Focus();
+            w.TheTextBox.SelectAll();
+
+            w.Title = "Change interactive highlight";
+
+            w.Owner = this;
+
+            if (w.ShowDialog() == false)
+                return;
+
+            var pattern = w.TheTextBox.Text;
+
+            if (pattern == "")
+                interactive_highlight_pattern = null;
+            else
+                interactive_highlight_pattern = new Regex(pattern);
+
+
+            Update_Filters();
+        }
+
+        void Update_Filters()
+        {
+            var all_filters = Config.Filters.ToList();
+
+            if (interactive_highlight_pattern != null)
+                all_filters.Insert(0, new Config.Filter
+                {
+                    Pattern = interactive_highlight_pattern,
+                    Foreground = Brushes.Black,
+                    Background = Brushes.Teal
+                });
+
+            line_collector.Set_Filters(all_filters.ToArray());
         }
 
         void Setup()
@@ -126,11 +182,6 @@ namespace FairyTail
         void File_Changed(FileInfo file)
         {
             file_was_changed.Set();
-        }
-
-        void Window_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape) Close();
         }
 
         public void Edit_File()

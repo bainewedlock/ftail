@@ -7,7 +7,7 @@
         mc:Ignorable="d" Loaded="Window_Loaded"
         Title="FairyTail" Width ="800" Height="600" MinHeight="200" MinWidth="400"
         Background="#EEEEEE"
-        KeyUp="Window_KeyUp" Closing="Window_Closing">
+        Closing="Window_Closing">
     <Window.Resources>
         <Style x:Key="SunkenTextBox" TargetType="{x:Type TextBox}">
             <Setter Property="Template">
@@ -34,6 +34,7 @@
                 <MenuItem Header="_Follow File (F)" Command="{Binding FollowFileCommand}"/>
                 <MenuItem Header="Toggle _Encoding (E)" Command="{Binding ToggleEncodingCommand}" />
                 <MenuItem Header="Edit File (F4)" Command="{Binding EditFileCommand}" />
+                <!--<MenuItem Header="Highlight (H)" Command="{Binding HighlightCommand}" />-->
             </MenuItem>
         </Menu>
         <DockPanel DockPanel.Dock="Top" Margin="5,5,5,5">
@@ -64,5 +65,7 @@
         <KeyBinding Key="F" Command="{Binding FollowFileCommand}"/>
         <KeyBinding Key="E" Command="{Binding ToggleEncodingCommand}"/>
         <KeyBinding Key="F4" Command="{Binding EditFileCommand}"/>
+        <KeyBinding Key="H" Command="{Binding HighlightCommand}"/>
+        <KeyBinding Key="ESC" Command="{Binding ExitCommand}"/>
     </Window.InputBindings>
 </Window>
