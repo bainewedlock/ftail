@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace FairyTail
@@ -58,7 +59,6 @@ namespace FairyTail
 
             InitializeComponent();
 
-
             DataContext = this;
             Lines = line_collector.Get_Collection();
 
@@ -67,6 +67,12 @@ namespace FairyTail
             Update_UI();
 
             file_was_changed.Set();
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            WindowPlacement.SetPlacement(new WindowInteropHelper(this).Handle, Properties.Settings.Default.MainWindowPlacement);
         }
 
         void Change_Interactive_Highlight()
@@ -174,6 +180,9 @@ namespace FairyTail
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Stop_It();
+
+            Properties.Settings.Default.MainWindowPlacement = WindowPlacement.GetPlacement(new WindowInteropHelper(this).Handle);
+            Properties.Settings.Default.Save();
         }
 
         void Stop_It()

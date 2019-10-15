@@ -64,6 +64,7 @@
     <Compile Include="FileHandle.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="LineCollector.cs" />
+    <Compile Include="WindowPlacement.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -108,7 +109,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="FairyTail.ico" />
