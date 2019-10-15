@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Media;
 
 namespace FairyTail
 {
@@ -36,7 +35,7 @@ namespace FairyTail
         public ReadOnlyObservableCollection<Line> Get_Collection()
             => new ReadOnlyObservableCollection<Line>(lines);
 
-        public void Append_Text(string text)
+        void Append_Text(string text)
         {
             var new_lines = text.Split(new[] { NewLine }, StringSplitOptions.None);
 
