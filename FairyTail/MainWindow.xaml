@@ -32,7 +32,6 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_View">
                 <MenuItem Header="_Follow File (F)" Command="{Binding FollowFileCommand}"/>
-                <MenuItem Header="Toggle _Encoding (E)" Command="{Binding ToggleEncodingCommand}" />
                 <MenuItem Header="Edit File (F4)" Command="{Binding EditFileCommand}" />
                 <MenuItem Header="Highlight (H)" Command="{Binding HighlightCommand}" />
             </MenuItem>
@@ -63,7 +62,6 @@
     </DockPanel>
     <Window.InputBindings>
         <KeyBinding Key="F" Command="{Binding FollowFileCommand}"/>
-        <KeyBinding Key="E" Command="{Binding ToggleEncodingCommand}"/>
         <KeyBinding Key="F4" Command="{Binding EditFileCommand}"/>
         <KeyBinding Key="H" Command="{Binding HighlightCommand}"/>
         <KeyBinding Key="ESC" Command="{Binding ExitCommand}"/>

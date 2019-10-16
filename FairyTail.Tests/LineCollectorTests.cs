@@ -12,7 +12,7 @@ namespace FairyTail.Tests
         {
             var sut = new LineCollector();
             long actual_seek = -1;
-            sut.File_Size_Changed(initial_file_size, seek => "" );
+            sut.File_Size_Changed(initial_file_size, seek => "");
 
             // ACT
             sut.File_Size_Changed(initial_file_size + grow_size, seek =>
@@ -22,7 +22,7 @@ namespace FairyTail.Tests
             });
 
             Assert.That(actual_seek, Is.EqualTo(initial_file_size));
-            Assert.That(sut.Get_Collection().ToArray(), Is.EqualTo(new[] { "!" }));
+            Assert.That(Lines_Of(sut), Is.EqualTo(new[] { "!" }));
         }
 
         [TestCase(10, 100000, "BEFORE-SNIP")]
@@ -41,7 +41,7 @@ namespace FairyTail.Tests
             });
 
             Assert.That(actual_seek, Is.GreaterThan(initial_file_size));
-            Assert.That(sut.Get_Collection().ToArray(), Is.EqualTo(new[] {
+            Assert.That(Lines_Of(sut), Is.EqualTo(new[] {
                 "BEFORE-SNIP",
                 LineCollector.SNIP,
                 "AFTER-SNIP" }));
@@ -60,7 +60,12 @@ namespace FairyTail.Tests
                 return null;
             });
 
-            Assert.That(sut.Get_Collection().ToArray(), Is.Empty);
+            Assert.That(Lines_Of(sut), Is.Empty);
+        }
+
+        static string[] Lines_Of(LineCollector sut)
+        {
+            return sut.Get_Collection().Select(x => x.Text).ToArray();
         }
     }
 }

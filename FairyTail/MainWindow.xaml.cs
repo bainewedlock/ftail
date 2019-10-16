@@ -19,21 +19,21 @@ namespace FairyTail
         TimeSpan Min_Delay_Between_Updates = TimeSpan.FromMilliseconds(150);
 
         Encoding encoding;
+        bool encoding_was_detected;
         FileHandle file_handle;
         AsyncAutoResetEvent file_was_changed = new AsyncAutoResetEvent();
         LineCollector line_collector;
         bool follow_file = true;
-        bool started = false;
+        bool started;
         string file;
-        Regex interactive_highlight_pattern = null;
+        Regex interactive_highlight_pattern;
 
-        public ReadOnlyObservableCollection<Line> Lines { get; private set; }
+        public ReadOnlyObservableCollection<Line> Lines { get; }
 
-        public ICommand FollowFileCommand { get; private set; }
-        public ICommand ToggleEncodingCommand { get; private set; }
-        public ICommand EditFileCommand { get; private set; }
-        public ICommand HighlightCommand { get; private set; }
-        public ICommand ExitCommand { get; private set; }
+        public ICommand FollowFileCommand { get; }
+        public ICommand EditFileCommand { get; }
+        public ICommand HighlightCommand { get; }
+        public ICommand ExitCommand { get; }
 
 
         public MainWindow()
@@ -50,9 +50,8 @@ namespace FairyTail
             file_handle = new FileHandle(new FileInfo(file), File_Changed);
             line_collector = new LineCollector(Lines_to_keep);
             Update_Filters();
-            encoding = Encoding.Default;
+            encoding = Encoding.UTF8; // use UTF8 until something else is detected
             FollowFileCommand = new DelegateCommand(Toggle_Follow_File);
-            ToggleEncodingCommand = new DelegateCommand(Toggle_Encoding);
             EditFileCommand = new DelegateCommand(Edit_File);
             HighlightCommand = new DelegateCommand(Change_Interactive_Highlight);
             ExitCommand = new DelegateCommand(Close);
@@ -64,6 +63,7 @@ namespace FairyTail
 
             Title = $"{Path.GetFileNameWithoutExtension(file)} - FTail";
             TheLabel.Text = file;
+            TheEncodingLabel.Text = "?";
             Update_UI();
 
             file_was_changed.Set();
@@ -166,6 +166,9 @@ namespace FairyTail
                         int size = (int)(total - seek);
                         var bytes = new byte[size];
                         stream.Read(bytes, 0, size);
+
+                        Update_Encoding(bytes);
+
                         return encoding.GetString(bytes);
                     });
             }
@@ -174,6 +177,23 @@ namespace FairyTail
             {
                 TheListBox.SelectedIndex = TheListBox.Items.Count - 1;
                 TheListBox.ScrollIntoView(TheListBox.SelectedItem);
+            }
+        }
+
+        void Update_Encoding(byte[] bytes)
+        {
+            if (encoding_was_detected) return;
+
+            if(EncodingDetection.TryDetect(bytes, out var new_encoding))
+            {
+                encoding_was_detected = true;
+                encoding = new_encoding;
+
+                if (encoding == Encoding.GetEncoding(1252))
+                    TheEncodingLabel.Text = "ansi";
+                else
+                    TheEncodingLabel.Text = encoding.BodyName;
+
             }
         }
 
@@ -213,23 +233,8 @@ namespace FairyTail
             Update_UI();
         }
 
-        public void Toggle_Encoding()
-        {
-            if (encoding == Encoding.Default)
-                encoding = Encoding.UTF8;
-            else
-                encoding = Encoding.Default;
-
-            Update_UI();
-        }
-
         void Update_UI()
         {
-            if (encoding == Encoding.Default)
-                TheEncodingLabel.Text = "ansi";
-            else
-                TheEncodingLabel.Text = encoding.BodyName;
-
             if (follow_file)
                 Background = Brushes.White;
             else

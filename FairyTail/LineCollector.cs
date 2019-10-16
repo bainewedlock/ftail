@@ -13,7 +13,7 @@ namespace FairyTail
         ObservableCollection<Line> lines = new ObservableCollection<Line>();
         int lines_to_keep;
         long previous_file_size;
-        Config.Filter[] filters;
+        Config.Filter[] filters = new Config.Filter[0];
 
         public LineCollector(int lines_to_keep = 5)
         {
