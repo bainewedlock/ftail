@@ -32,6 +32,7 @@ namespace FairyTail
 
         public ICommand FollowFileCommand { get; }
         public ICommand EditFileCommand { get; }
+        public ICommand EditFileAndCloseCommand { get; }
         public ICommand HighlightCommand { get; }
         public ICommand ExitCommand { get; }
 
@@ -52,7 +53,8 @@ namespace FairyTail
             Update_Filters();
             encoding = Encoding.UTF8; // use UTF8 until something else is detected
             FollowFileCommand = new DelegateCommand(Toggle_Follow_File);
-            EditFileCommand = new DelegateCommand(Edit_File);
+            EditFileCommand = new DelegateCommand(() => Edit_File(close: false));
+            EditFileAndCloseCommand = new DelegateCommand(() => Edit_File(close: true));
             HighlightCommand = new DelegateCommand(Change_Interactive_Highlight);
             ExitCommand = new DelegateCommand(Close);
 
@@ -215,10 +217,10 @@ namespace FairyTail
             file_was_changed.Set();
         }
 
-        public void Edit_File()
+        public void Edit_File(bool close)
         {
             Process.Start(file);
-            Close();
+            if(close) Close();
         }
 
         public void Toggle_Follow_File()
