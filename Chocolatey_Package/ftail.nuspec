@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>FTail</id>
+    <version>1.0.0</version>
+    <title>FTail</title>
+    <authors>Baine Wedlock</authors>
+    <tags>log tail admin</tags>
+    <summary>Simple Tail App</summary>
+    <description>
+      ## Usage
+      Ftail.exe (filename)
+    </description>
+  </metadata>
+  <files>
+    <file src="tools\*.msi" target="tools" />
+    <file src="tools\*.ps1" target="tools" />
+  </files>
+</package>
