@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Windows.Media;
 
-namespace FairyTail
+namespace FTail
 {
     public static class Config
     {

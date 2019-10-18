@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
 
-namespace FairyTail
+namespace FTail
 {
     /// <summary>
     /// Interaction logic for App.xaml

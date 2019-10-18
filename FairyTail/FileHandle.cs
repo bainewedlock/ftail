@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 
-namespace FairyTail
+namespace FTail
 {
     class FileHandle
     {

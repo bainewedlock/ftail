@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace FairyTail
+namespace FTail
 {
     public class DelegateCommand : ICommand
     {

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace FairyTail
+namespace FTail
 {
     public partial class PromptWindow : Window
     {

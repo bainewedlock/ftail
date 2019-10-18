@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace FairyTail
+namespace FTail
 {
     public static class EncodingDetection
     {

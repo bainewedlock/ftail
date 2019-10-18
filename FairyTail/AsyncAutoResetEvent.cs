@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FairyTail
+namespace FTail
 {
     public class AsyncAutoResetEvent
     {

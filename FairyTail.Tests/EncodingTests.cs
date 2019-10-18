@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Text;
 
-namespace FairyTail.Tests
+namespace FTail.Tests
 {
     [TestFixture]
     public class EncodingTests

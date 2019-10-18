@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace FairyTail
+namespace FTail
 {
     // RECT structure required by WINDOWPLACEMENT structure
     [Serializable]

@@ -10,8 +10,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using FairyTail.Properties;
+using FTail.Properties;
 
-namespace FairyTail
+namespace FTail
 {
     public partial class MainWindow : Window
     {
@@ -74,7 +76,7 @@ namespace FairyTail
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-            WindowPlacement.SetPlacement(new WindowInteropHelper(this).Handle, Properties.Settings.Default.MainWindowPlacement);
+            WindowPlacement.SetPlacement(new WindowInteropHelper(this).Handle, Settings.Default.MainWindowPlacement);
         }
 
         void Change_Interactive_Highlight()
@@ -103,7 +105,6 @@ namespace FairyTail
                 interactive_highlight_pattern = null;
             else
                 interactive_highlight_pattern = new Regex(pattern, RegexOptions.IgnoreCase);
-
 
             Update_Filters();
         }
@@ -203,8 +204,8 @@ namespace FairyTail
         {
             Stop_It();
 
-            Properties.Settings.Default.MainWindowPlacement = WindowPlacement.GetPlacement(new WindowInteropHelper(this).Handle);
-            Properties.Settings.Default.Save();
+            Settings.Default.MainWindowPlacement = WindowPlacement.GetPlacement(new WindowInteropHelper(this).Handle);
+            Settings.Default.Save();
         }
 
         void Stop_It()

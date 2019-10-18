@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace FairyTail
+namespace FTail
 {
     public class Line
     {

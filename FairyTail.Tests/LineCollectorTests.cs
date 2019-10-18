@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Linq;
 
-namespace FairyTail.Tests
+namespace FTail.Tests
 {
     [TestFixture]
     public class LineCollectorTests
