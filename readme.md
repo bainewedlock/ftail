@@ -1,1 +1,3 @@
-## Ideen
+## Usage
+
+FTail.exe (filename)
