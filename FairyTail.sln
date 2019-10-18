@@ -9,10 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FairyTail.Tests", "FairyTai
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DF56FF15-151C-40E2-964F-943D3A3CE3A2}"
 	ProjectSection(SolutionItems) = preProject
+		Chocolatey_Package\ftail.nuspec = Chocolatey_Package\ftail.nuspec
 		readme.md = readme.md
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FairyTailSetup", "FairyTailSetup\FaiyTailSetup.vdproj", "{F1644FF0-6536-4AC0-8CC6-BD76D47CCE37}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FTailSetup", "FairyTailSetup\FaiyTailSetup.vdproj", "{F1644FF0-6536-4AC0-8CC6-BD76D47CCE37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

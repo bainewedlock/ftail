@@ -10,6 +10,9 @@
     <description>
       ## Usage
       Ftail.exe (filename)
+
+      ## Source Code
+      https://github.com/bainewedlock/ftail
     </description>
   </metadata>
   <files>
