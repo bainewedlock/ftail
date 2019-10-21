@@ -25,5 +25,6 @@
   <files>
     <file src="tools\*.msi" target="tools" />
     <file src="tools\*.ps1" target="tools" />
+    <file src="tools\*.txt" target="tools" />
   </files>
 </package>
