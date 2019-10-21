@@ -3,7 +3,7 @@
   <metadata>
     <id>FTail</id>
     <version>1.0.0</version>
-    <title>FTail</title>
+    <title>FTail Log Viewer</title>
     <authors>Baine Wedlock</authors>
     <tags>log tail admin</tags>
     <summary>A simple 'tail'-like app for viewing and following log files.</summary>
