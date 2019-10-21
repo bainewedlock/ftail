@@ -6,14 +6,18 @@
     <title>FTail</title>
     <authors>Baine Wedlock</authors>
     <tags>log tail admin</tags>
-    <summary>Simple Tail App</summary>
+    <summary>A simple 'tail'-like app for viewing and following log files.</summary>
     <description>
       ## Usage
       Ftail.exe (filename)
 
-      ## Source Code
-      https://github.com/bainewedlock/ftail
+      The App is designed to be called from another app (like FreeCommander) passing the path of a log file.
     </description>
+    <projectUrl>https://github.com/bainewedlock/ftail</projectUrl>
+    <projectSourceUrl>https://github.com/bainewedlock/ftail</projectSourceUrl>
+    <license type="expression">MIT</license>
+    <iconUrl>https://rawcdn.githack.com/bainewedlock/ftail/3f6429555a8227e74f5a68b4d8af63b18073e9e1/FairyTail/FairyTail.ico</iconUrl>
+    <packageSourceUrl>https://github.com/bainewedlock/ftail/tree/master/Chocolatey_Package</packageSourceUrl>
   </metadata>
   <files>
     <file src="tools\*.msi" target="tools" />

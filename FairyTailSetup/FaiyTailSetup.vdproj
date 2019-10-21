@@ -34,13 +34,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BCD6811F8F1C41849E0E341C6E5A40C4"
+        "OwnerKey" = "8:_3BB6D728299D54E47F20A766E28DCB5B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_3BB6D728299D54E47F20A766E28DCB5B"
+        "OwnerKey" = "8:_BCD6811F8F1C41849E0E341C6E5A40C4"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -246,7 +246,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FTail"
         "ProductCode" = "8:{89814810-4FDB-4BD5-9E50-7C5115CC630A}"
-        "PackageCode" = "8:{2C9293A4-9AA7-48D9-880B-22A08DEE8476}"
+        "PackageCode" = "8:{F0F59FDB-821D-493C-B366-6ACD82975F70}"
         "UpgradeCode" = "8:{74AEE244-D702-49CA-8C60-90F5BB7B20FB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
