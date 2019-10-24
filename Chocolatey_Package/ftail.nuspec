@@ -19,7 +19,7 @@
     <iconUrl>https://rawcdn.githack.com/bainewedlock/ftail/3f6429555a8227e74f5a68b4d8af63b18073e9e1/FairyTail/FairyTail.ico</iconUrl>
     <packageSourceUrl>https://github.com/bainewedlock/ftail/tree/master/Chocolatey_Package</packageSourceUrl>
     <dependencies>
-      <dependency id="dotnetfx" version="4.7.2"/>
+      <dependency id="dotnetfx" version="4.6.2"/>
     </dependencies>
   </metadata>
   <files>

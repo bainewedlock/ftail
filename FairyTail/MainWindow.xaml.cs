@@ -43,11 +43,7 @@ namespace FTail
             Setup();
             file = Environment.GetCommandLineArgs().ElementAtOrDefault(1) ?? "";
 
-            if (file == "")
-            {
-                MessageBox.Show("Need filename!");
-                Environment.Exit(2);
-            }
+            Sanity_Check();
 
             file_handle = new FileHandle(new FileInfo(file), File_Changed);
             line_collector = new LineCollector(Lines_to_keep);
@@ -70,6 +66,22 @@ namespace FTail
             Update_UI();
 
             file_was_changed.Set();
+        }
+
+        void Sanity_Check()
+        {
+            if (file == "")
+            {
+                MessageBox.Show("You need to pass a file name as argument!");
+                Environment.Exit(2);
+            }
+
+            var attr = File.GetAttributes(file);
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                MessageBox.Show("Expected: Filename, Got: Directoryname");
+                Environment.Exit(2);
+            }
         }
 
         protected override void OnSourceInitialized(EventArgs e)
