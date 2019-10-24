@@ -48,7 +48,6 @@ namespace FTail
             file_handle = new FileHandle(new FileInfo(file), File_Changed);
             line_collector = new LineCollector(Lines_to_keep);
             Update_Filters();
-            encoding = Encoding.UTF8; // use UTF8 until something else is detected
             FollowFileCommand = new DelegateCommand(Toggle_Follow_File);
             EditFileCommand = new DelegateCommand(() => Edit_File(close: false));
             EditFileAndCloseCommand = new DelegateCommand(() => Edit_File(close: true));
@@ -65,7 +64,39 @@ namespace FTail
             TheEncodingLabel.Text = "?";
             Update_UI();
 
+            Guess_Encoding_From_BOM();
             file_was_changed.Set();
+        }
+
+        bool Guess_Encoding_From_BOM()
+        {
+            var bom = new byte[4];
+            using (var file = GetStream())
+                file.Read(bom, 0, 4);
+
+            if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Set_Encoding(Encoding.UTF7);
+            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Set_Encoding(Encoding.UTF8);
+            if (bom[0] == 0xff && bom[1] == 0xfe) return Set_Encoding(Encoding.Unicode); //UTF-16LE
+            if (bom[0] == 0xfe && bom[1] == 0xff) return Set_Encoding(Encoding.BigEndianUnicode); //UTF-16BE
+            if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return Set_Encoding(Encoding.UTF32);
+
+            return Reset_Encoding();
+        }
+
+        bool Reset_Encoding()
+        {
+            encoding = Encoding.ASCII;
+            encoding_was_detected = false;
+            Update_Encoding_Display();
+            return true;
+        }
+
+        bool Set_Encoding(Encoding new_encoding)
+        {
+            encoding = new_encoding;
+            encoding_was_detected = true;
+            Update_Encoding_Display();
+            return true;
         }
 
         void Sanity_Check()
@@ -169,8 +200,7 @@ namespace FTail
 
         void Update_From_File()
         {
-            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read,
-                FileShare.ReadWrite))
+            using (var stream = GetStream())
             {
                 long total = stream.Length;
                 line_collector.File_Size_Changed(total,
@@ -194,21 +224,29 @@ namespace FTail
             }
         }
 
+        FileStream GetStream() => new FileStream(file, FileMode.Open, FileAccess.Read,
+                            FileShare.ReadWrite);
+
         void Update_Encoding(byte[] bytes)
         {
             if (encoding_was_detected) return;
 
-            if(EncodingDetection.TryDetect(bytes, out var new_encoding))
+            if (EncodingDetection.TryDetect(bytes, out var new_encoding))
             {
                 encoding_was_detected = true;
                 encoding = new_encoding;
 
-                if (encoding == Encoding.GetEncoding(1252))
-                    TheEncodingLabel.Text = "ansi";
-                else
-                    TheEncodingLabel.Text = encoding.BodyName;
+                Update_Encoding_Display();
 
             }
+        }
+
+        void Update_Encoding_Display()
+        {
+            if (encoding == Encoding.GetEncoding(1252))
+                TheEncodingLabel.Text = "ansi";
+            else
+                TheEncodingLabel.Text = encoding.BodyName;
         }
 
         void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -232,7 +270,7 @@ namespace FTail
         public void Edit_File(bool close)
         {
             Process.Start(file);
-            if(close) Close();
+            if (close) Close();
         }
 
         public void Toggle_Follow_File()
