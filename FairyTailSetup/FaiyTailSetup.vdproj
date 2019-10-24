@@ -102,10 +102,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.2"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4.6.2 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.6.2"
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
                     }
                 }
             }
@@ -246,7 +246,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:FTail"
         "ProductCode" = "8:{89814810-4FDB-4BD5-9E50-7C5115CC630A}"
-        "PackageCode" = "8:{F0F59FDB-821D-493C-B366-6ACD82975F70}"
+        "PackageCode" = "8:{41FE2CD3-876B-4695-9658-2CDF9F5126DC}"
         "UpgradeCode" = "8:{74AEE244-D702-49CA-8C60-90F5BB7B20FB}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
