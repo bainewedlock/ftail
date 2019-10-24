@@ -22,7 +22,7 @@
 * first release
     </releaseNotes>
     <dependencies>
-      <dependency id="dotnet4.6.1"/>
+      <dependency id="dotnetfx"/>
     </dependencies>
   </metadata>
   <files>
