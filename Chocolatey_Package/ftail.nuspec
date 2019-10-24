@@ -14,16 +14,16 @@
       The App is designed to be called from another app (like FreeCommander) passing the path of a log file.
     </description>
     <projectUrl>https://github.com/bainewedlock/ftail</projectUrl>
-    <licenseUrl>https://opensource.org/osd-annotated</licenseUrl>
+    <licenseUrl>https://raw.githubusercontent.com/bainewedlock/ftail/master/LICENSE.txt</licenseUrl>
     <iconUrl>https://rawcdn.githack.com/bainewedlock/ftail/3f6429555a8227e74f5a68b4d8af63b18073e9e1/FairyTail/FairyTail.ico</iconUrl>
     <packageSourceUrl>https://github.com/bainewedlock/ftail/tree/master/Chocolatey_Package</packageSourceUrl>
     <releaseNotes>
 ## 1.0.0
 * first release
     </releaseNotes>
-    <!--<dependencies>
-      <dependency id="dotnetfx" version="4.6.2"/>
-    </dependencies>-->
+    <dependencies>
+      <dependency id="dotnet4.6.1"/>
+    </dependencies>
   </metadata>
   <files>
     <file src="tools\*.msi" target="tools" />
