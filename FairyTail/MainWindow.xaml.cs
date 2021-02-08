@@ -1,6 +1,7 @@
 ﻿using FairyTail.Properties;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,7 @@ using System.Windows.Media;
 
 namespace FTail
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         const int Lines_to_keep = 150;
         TimeSpan Min_Delay_Between_Updates = TimeSpan.FromMilliseconds(150);
@@ -29,22 +30,18 @@ namespace FTail
         string file;
         Regex interactive_highlight_pattern;
 
-        public ReadOnlyObservableCollection<Line> Lines { get; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public ICommand FollowFileCommand { get; }
-        public ICommand EditFileCommand { get; }
-        public ICommand EditFileAndCloseCommand { get; }
-        public ICommand HighlightCommand { get; }
-        public ICommand ExitCommand { get; }
+        public ReadOnlyObservableCollection<Line> Lines { get; set;  }
 
+        public ICommand FollowFileCommand { get; set;  }
+        public ICommand EditFileCommand { get; set;  }
+        public ICommand EditFileAndCloseCommand { get; set;  }
+        public ICommand HighlightCommand { get; set;  }
+        public ICommand ExitCommand { get; set;  }
 
-        public MainWindow()
+        void AttachToFile()
         {
-            Setup();
-            file = Environment.GetCommandLineArgs().ElementAtOrDefault(1) ?? "";
-
-            Sanity_Check();
-
             file_handle = new FileHandle(new FileInfo(file), File_Changed);
             line_collector = new LineCollector(Lines_to_keep);
             Update_Filters();
@@ -54,18 +51,32 @@ namespace FTail
             HighlightCommand = new DelegateCommand(Change_Interactive_Highlight);
             ExitCommand = new DelegateCommand(Close);
 
+            Lines = line_collector.Get_Collection();
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs("lines"));
+
+            Guess_Encoding_From_BOM();
+            file_was_changed.Set();
+        }
+
+        public MainWindow()
+        {
+            Setup();
+            file = Environment.GetCommandLineArgs().ElementAtOrDefault(1) ?? "";
+
+            Sanity_Check();
+
             InitializeComponent();
 
             DataContext = this;
-            Lines = line_collector.Get_Collection();
 
             Title = $"{Path.GetFileNameWithoutExtension(file)} - FTail";
             TheLabel.Text = file;
             TheEncodingLabel.Text = "?";
-            Update_UI();
 
-            Guess_Encoding_From_BOM();
-            file_was_changed.Set();
+            AttachToFile();
+
+            Update_UI();
         }
 
         bool Guess_Encoding_From_BOM()
@@ -203,6 +214,13 @@ namespace FTail
             using (var stream = GetStream())
             {
                 long total = stream.Length;
+
+                if (total < line_collector.PreviousFileSize())
+                {
+                    AttachToFile();
+                    return;
+                }
+
                 line_collector.File_Size_Changed(total,
                     seek_and_read: seek =>
                     {
