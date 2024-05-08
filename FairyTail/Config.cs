@@ -18,6 +18,10 @@ namespace FTail
             Filters = new Filter[0];
             FontFamily = "Consolas";
             FontSize = 12;
+            InteractiveHighlightForeground =
+                Brushes.White;
+            InteractiveHighlightBackground =
+                Brushes.DarkGray;
         }
 
         public static void Load(string file)
